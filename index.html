@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Builder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .layout-selection {
+            padding: 20px;
+            text-align: center;
+        }
+        .layouts {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .layout {
+            border: 2px solid #ccc;
+            padding: 10px;
+            width: 150px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .layout:hover {
+            background-color: #e0e0e0;
+        }
+        .builder-area {
+            display: none;
+            padding: 20px;
+        }
+        #canvas {
+            border: 1px solid #ccc;
+            height: 500px;
+            position: relative;
+            background-color: #f4f4f4;
+        }
+        .toolbox {
+            margin-bottom: 20px;
+        }
+        .toolbox .tool {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: #fff;
+            margin-right: 10px;
+            border-radius: 5px;
+            cursor: grab;
+        }
+        .tool:hover {
+            background-color: #0056b3;
+        }
+        .draggable {
+            position: absolute;
+            cursor: move;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layout-selection">
+    <h1>Choose a Layout</h1>
+    <div class="layouts">
+        <div class="layout" data-layout="company-profile">Company Profile</div>
+        <div class="layout" data-layout="business">Business</div>
+        <div class="layout" data-layout="cv">CV</div>
+        <div class="layout" data-layout="blog">Blog</div>
+        <div class="layout" data-layout="wedding-invitation">Wedding Invitation</div>
+    </div>
+</div>
+
+<div class="builder-area">
+    <h2>Drag and Drop to Build Your Website</h2>
+    <div class="toolbox">
+        <div class="tool" draggable="true" data-element="text">Text</div>
+        <div class="tool" draggable="true" data-element="button">Button</div>
+        <div class="tool" draggable="true" data-element="logo">Logo</div>
+        <div class="tool" draggable="true" data-element="list">List</div>
+        <div class="tool" draggable="true" data-element="section">Section</div>
+    </div>
+    <div id="canvas"></div>
+</div>
+
+<script>
+    const layouts = document.querySelectorAll('.layout');
+    const builderArea = document.querySelector('.builder-area');
+    const canvas = document.getElementById('canvas');
+    const toolbox = document.querySelectorAll('.tool');
+
+    layouts.forEach(layout => {
+        layout.addEventListener('click', () => {
+            document.querySelector('.layout-selection').style.display = 'none';
+            builderArea.style.display = 'block';
+
+            const layoutType = layout.dataset.layout;
+            canvas.innerHTML = `<h3>Layout: ${layoutType}</h3>`;
+        });
+    });
+
+    toolbox.forEach(tool => {
+        tool.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('element', e.target.dataset.element);
+        });
+    });
+
+    canvas.addEventListener('dragover', (e) => {
+        e.preventDefault();
+    });
+
+    canvas.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const element = e.dataTransfer.getData('element');
+
+        let newElement;
+        switch (element) {
+            case 'text':
+                newElement = document.createElement('div');
+                newElement.textContent = 'New Text';
+                break;
+            case 'button':
+                newElement = document.createElement('button');
+                newElement.textContent = 'Click Me';
+                break;
+            case 'logo':
+                newElement = document.createElement('img');
+                newElement.src = 'https://via.placeholder.com/100';
+                newElement.alt = 'Logo';
+                break;
+            case 'list':
+                newElement = document.createElement('ul');
+                newElement.innerHTML = '<li>Item 1</li><li>Item 2</li><li>Item 3</li>';
+                break;
+            case 'section':
+                newElement = document.createElement('div');
+                newElement.style.border = '1px solid #000';
+                newElement.style.padding = '10px';
+                newElement.style.margin = '10px 0';
+                newElement.textContent = 'Section';
+                break;
+        }
+
+        if (newElement) {
+            newElement.classList.add('draggable');
+            newElement.style.top = `${e.clientY - canvas.offsetTop}px`;
+            newElement.style.left = `${e.clientX - canvas.offsetLeft}px`;
+            canvas.appendChild(newElement);
+        }
+
+        makeDraggable();
+    });
+
+    function makeDraggable() {
+        const draggables = document.querySelectorAll('.draggable');
+
+        draggables.forEach(draggable => {
+            draggable.addEventListener('mousedown', (e) => {
+                let offsetX = e.clientX - draggable.offsetLeft;
+                let offsetY = e.clientY - draggable.offsetTop;
+
+                function moveElement(e) {
+                    draggable.style.left = `${e.clientX - offsetX}px`;
+                    draggable.style.top = `${e.clientY - offsetY}px`;
+                }
+
+                function stopMoving() {
+                    document.removeEventListener('mousemove', moveElement);
+                    document.removeEventListener('mouseup', stopMoving);
+                }
+
+                document.addEventListener('mousemove', moveElement);
+                document.addEventListener('mouseup', stopMoving);
+            });
+        });
+    }
+</script>
+
+</body>
+</html>
