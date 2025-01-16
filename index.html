@@ -3,62 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Website Builder</title>
+    <title>Advanced Website Builder</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="layout-selection">
-    <h1>Welcome to the Website Builder</h1>
-    <p>Select a layout to get started and customize your website with our powerful drag-and-drop tools.</p>
-    <div class="layouts">
-        <div class="layout" data-layout="company-profile">Company Profile</div>
-        <div class="layout" data-layout="business">Business</div>
-        <div class="layout" data-layout="cv">CV</div>
-        <div class="layout" data-layout="blog">Blog</div>
-        <div class="layout" data-layout="wedding-invitation">Wedding Invitation</div>
+<div id="builder" class="builder">
+    <!-- Sidebar with draggable elements -->
+    <div id="sidebar" class="sidebar">
+        <h3>Elements</h3>
+        <div class="tool" draggable="true" data-element="text">Text</div>
+        <div class="tool" draggable="true" data-element="button">Button</div>
+        <div class="tool" draggable="true" data-element="image">Image</div>
+        <div class="tool" draggable="true" data-element="section">Section</div>
+        <div class="tool" draggable="true" data-element="list">List</div>
+    </div>
+
+    <!-- Canvas Area -->
+    <div id="canvas-container" class="canvas-container">
+        <div id="toolbar" class="toolbar">
+            <button id="undo" class="action">Undo</button>
+            <button id="redo" class="action">Redo</button>
+            <button id="preview" class="action">Preview</button>
+        </div>
+        <div id="canvas" class="canvas">
+            <h3>Start Building Your Website</h3>
+        </div>
     </div>
 </div>
-
-<div class="builder-area">
-    <h2>Website Builder Features</h2>
-    <ul>
-        <li>User-Friendly Drag-and-Drop Interface</li>
-        <li>Real-Time Preview</li>
-        <li>Responsive Design Controls</li>
-        <li>Customizable Prebuilt Templates</li>
-        <li>Widget and Element Library</li>
-        <li>Dynamic Content Support</li>
-        <li>Undo/Redo Actions</li>
-        <li>Inline Text Editing</li>
-        <li>Custom CSS Support</li>
-        <li>Global Styles and Design System</li>
-        <li>Theme Builder (Header, Footer, etc.)</li>
-        <li>Popup Builder</li>
-        <li>Form Builder with Integrations</li>
-        <li>Animation and Motion Effects</li>
-        <li>Custom Fonts and Icons</li>
-        <li>Multi-Language Support</li>
-        <li>Role-Based Access Control</li>
-        <li>Version History</li>
-        <li>Export and Import Layouts</li>
-        <li>API and Developer Hooks</li>
-        <li>WooCommerce Integration</li>
-        <li>SEO-Friendly Output</li>
-        <li>Performance Optimization Tools</li>
-        <li>Mobile Editing Controls</li>
-        <li>Cross-Browser Compatibility</li>
-    </ul>
-</div>
-<div class="toolbox">
-    <div class="tool" draggable="true" data-element="text">Text</div>
-    <div class="tool" draggable="true" data-element="button">Button</div>
-    <div class="tool" draggable="true" data-element="logo">Logo</div>
-    <div class="tool" draggable="true" data-element="list">List</div>
-    <div class="tool" draggable="true" data-element="section">Section</div>
-</div>
-
-<div id="canvas"></div>
 
 <script src="functions.js"></script>
 </body>
