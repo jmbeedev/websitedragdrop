@@ -3,35 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Website Builder</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Drag and Drop Website Builder</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        #container {
+            display: flex;
+            flex: 1;
+        }
+
+        #toolbar {
+            width: 20%;
+            background: #f4f4f4;
+            padding: 10px;
+            overflow-y: auto;
+        }
+
+        #toolbar .tool {
+            margin: 5px 0;
+            padding: 5px;
+            background: #ddd;
+            border: 1px solid #ccc;
+            cursor: grab;
+            text-align: center;
+        }
+
+        #canvas {
+            flex: 1;
+            background: #fff;
+            border-left: 1px solid #ccc;
+            border-right: 1px solid #ccc;
+            position: relative;
+        }
+
+        #canvas .droppable {
+            position: absolute;
+            min-width: 100px;
+            min-height: 30px;
+            border: 1px dashed #000;
+        }
+
+        #code-output {
+            height: 30%;
+            background: #282c34;
+            color: #61dafb;
+            padding: 10px;
+            overflow-y: auto;
+            font-family: monospace;
+        }
+
+        .hide {
+            display: none;
+        }
+    </style>
 </head>
 <body>
-
-<div id="builder" class="builder">
-    <!-- Sidebar with draggable elements -->
-    <div id="sidebar" class="sidebar">
-        <h3>Elements</h3>
-        <div class="tool" draggable="true" data-element="text">Text</div>
-        <div class="tool" draggable="true" data-element="button">Button</div>
-        <div class="tool" draggable="true" data-element="image">Image</div>
-        <div class="tool" draggable="true" data-element="section">Section</div>
-        <div class="tool" draggable="true" data-element="list">List</div>
-    </div>
-
-    <!-- Canvas Area -->
-    <div id="canvas-container" class="canvas-container">
-        <div id="toolbar" class="toolbar">
-            <button id="undo" class="action">Undo</button>
-            <button id="redo" class="action">Redo</button>
-            <button id="preview" class="action">Preview</button>
+    <div id="container">
+        <div id="toolbar">
+            <h3>Toolbar</h3>
+            <div class="tool" draggable="true" data-tag="button">Button</div>
+            <div class="tool" draggable="true" data-tag="h1">Heading 1</div>
+            <div class="tool" draggable="true" data-tag="p">Paragraph</div>
+            <div class="tool" draggable="true" data-tag="img">Image</div>
+            <div class="tool" draggable="true" data-tag="input">Input Field</div>
+            <div class="tool" draggable="true" data-tag="textarea">Textarea</div>
+            <div class="tool" draggable="true" data-tag="checkbox">Checkbox</div>
+            <div class="tool" draggable="true" data-tag="video">Video</div>
+            <!-- Add other tools as needed -->
         </div>
-        <div id="canvas" class="canvas">
-            <h3>Start Building Your Website</h3>
+        <div id="canvas">
+            <p>Drag elements here</p>
         </div>
     </div>
-</div>
+    <div id="code-output">
+        <h3>Generated Code</h3>
+        <pre id="code"></pre>
+    </div>
 
-<script src="functions.js"></script>
+    <script>
+        const toolbar = document.getElementById('toolbar');
+        const canvas = document.getElementById('canvas');
+        const codeOutput = document.getElementById('code');
+
+        toolbar.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', e.target.dataset.tag);
+        });
+
+        canvas.addEventListener('dragover', (e) => {
+            e.preventDefault();
+        });
+
+        canvas.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const tag = e.dataTransfer.getData('text/plain');
+            if (tag) {
+                const element = document.createElement(tag);
+                element.textContent = tag;
+                element.contentEditable = true;
+                element.style.position = 'absolute';
+                element.style.left = `${e.offsetX}px`;
+                element.style.top = `${e.offsetY}px`;
+                canvas.appendChild(element);
+                updateCodeOutput();
+
+                element.addEventListener('dblclick', () => {
+                    element.remove();
+                    updateCodeOutput();
+                });
+            }
+        });
+
+        function updateCodeOutput() {
+            codeOutput.textContent = canvas.innerHTML;
+        }
+    </script>
 </body>
 </html>
