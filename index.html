@@ -40,6 +40,7 @@
             border-left: 1px solid #ccc;
             border-right: 1px solid #ccc;
             position: relative;
+            padding: 20px;
         }
 
         #canvas .droppable {
@@ -56,6 +57,24 @@
             padding: 10px;
             overflow-y: auto;
             font-family: monospace;
+        }
+
+        header, footer {
+            background: #f4f4f4;
+            padding: 10px;
+            text-align: center;
+        }
+
+        nav {
+            background: #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .widget {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px 0;
         }
 
         .hide {
@@ -78,7 +97,12 @@
             <!-- Add other tools as needed -->
         </div>
         <div id="canvas">
-            <p>Drag elements here</p>
+            <header contenteditable="true">Default Logo</header>
+            <nav contenteditable="true">Default Menu</nav>
+            <div class="widget" contenteditable="true">Default Header Section</div>
+            <div class="widget" contenteditable="true">Default Content Section</div>
+            <div class="widget" contenteditable="true">Default Video Section</div>
+            <footer contenteditable="true">Default Footer</footer>
         </div>
     </div>
     <div id="code-output">
@@ -104,7 +128,23 @@
             const tag = e.dataTransfer.getData('text/plain');
             if (tag) {
                 const element = document.createElement(tag);
-                element.textContent = tag;
+
+                if (tag === 'img') {
+                    const src = prompt('Enter image URL:');
+                    if (src) {
+                        element.src = src;
+                        element.alt = 'Image';
+                    }
+                } else if (tag === 'video') {
+                    const src = prompt('Enter video URL:');
+                    if (src) {
+                        element.src = src;
+                        element.controls = true;
+                    }
+                } else {
+                    element.textContent = tag;
+                }
+
                 element.contentEditable = true;
                 element.style.position = 'absolute';
                 element.style.left = `${e.offsetX}px`;
@@ -122,6 +162,31 @@
         function updateCodeOutput() {
             codeOutput.textContent = canvas.innerHTML;
         }
+
+        async function cloneWebsite() {
+            const url = prompt('Enter the URL of the website to clone:');
+            if (!url) return;
+
+            try {
+                const response = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`);
+                if (response.ok) {
+                    const html = await response.text();
+                    canvas.innerHTML = html;
+                    updateCodeOutput();
+                } else {
+                    alert('Failed to fetch the website. Please check the URL and try again.');
+                }
+            } catch (error) {
+                alert('Error cloning website: ' + error.message);
+            }
+        }
+
+        // Add a clone website button
+        const cloneButton = document.createElement('button');
+        cloneButton.textContent = 'Clone Website';
+        cloneButton.style.margin = '10px';
+        cloneButton.addEventListener('click', cloneWebsite);
+        document.body.insertBefore(cloneButton, document.getElementById('container'));
     </script>
 </body>
 </html>
