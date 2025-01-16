@@ -160,7 +160,10 @@
         });
 
         function updateCodeOutput() {
-            codeOutput.textContent = canvas.innerHTML;
+            const clonedCanvas = canvas.cloneNode(true);
+            const elements = clonedCanvas.querySelectorAll('[style]');
+            elements.forEach(el => el.removeAttribute('style'));
+            codeOutput.textContent = clonedCanvas.innerHTML;
         }
 
         async function cloneWebsite() {
@@ -172,6 +175,14 @@
                 if (response.ok) {
                     const html = await response.text();
                     canvas.innerHTML = html;
+                    const allElements = canvas.querySelectorAll('*');
+                    allElements.forEach(el => {
+                        el.contentEditable = true;
+                        el.addEventListener('dblclick', () => {
+                            el.remove();
+                            updateCodeOutput();
+                        });
+                    });
                     updateCodeOutput();
                 } else {
                     alert('Failed to fetch the website. Please check the URL and try again.');
